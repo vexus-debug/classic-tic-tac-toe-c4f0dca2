@@ -1,0 +1,12 @@
+# Migration ledger — classic-tic-tac-toe-2814fdf8
+
+Source: GitHub repo (public), imported as-is into the project working tree on 2026-10-27.
+
+| Capability | Source | Outcome | Status | Next action |
+|---|---|---|---|---|
+| Code (Vite + TanStack Start + Supabase client) | repo src/, public/, configs | copied to project | done | none |
+| Schema (supabase/migrations, 10 SQL files) | repo supabase/migrations | copied, not applied | pending | Apply migrations to this project's database when requested |
+| Records / database data | none in repo | not available | pending | Ask user for CSV/JSON export from their Supabase dashboard after preview |
+| Auth | repo uses Supabase auth (unverified) | code imported as-is | pending | Depends on database setup |
+| Credentials | repo .env excluded by design | not imported | pending | Configure via Lovable when verification is ready |
+| Tests / verification | — | skipped per user instruction | skipped | User will verify themselves |
