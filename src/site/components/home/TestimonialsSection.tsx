@@ -1,8 +1,13 @@
 import { motion } from "framer-motion";
-import { Quote, BadgeCheck, MapPin } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Quote, MapPin, ArrowRight } from "lucide-react";
+import clinicImg from "@/assets/site/hero-clinic.jpg";
+import ParallaxBand from "./ParallaxBand";
+import { useIndustry, type Industry } from "./industry";
 
-const testimonials = [
+const testimonials: { industry: Industry; outcome: string; quote: string; name: string; role: string; clinic: string; location: string; specialty: string }[] = [
   {
+    industry: "dental",
     outcome: "Evening billing time gone",
     quote: "I used to spend my evenings doing billing. Now it's done before I leave the chair. I actually have dinner with my family now.",
     name: "Dr. Adebayo Ogundimu",
@@ -12,64 +17,72 @@ const testimonials = [
     specialty: "Dental",
   },
   {
+    industry: "lab",
     outcome: "No missed lab deliveries",
-    quote: "We stopped losing lab work. Every case is tracked, every technician knows what's due. We've never had a missed delivery since.",
+    quote: "Every sample and case is tracked from dispatch to delivery. Everyone knows what's due, and we haven't missed a delivery since.",
     name: "Dr. Funke Adeyemi",
     role: "Clinical Director",
-    clinic: "Premier Dental Centre",
+    clinic: "Premier Diagnostic Centre",
     location: "Abuja",
-    specialty: "Dental",
+    specialty: "Diagnostic Lab",
   },
   {
+    industry: "eye",
     outcome: "Revenue up 23% in 3 months",
-    quote: "My revenue went up 23% in three months, not because I saw more patients, but because I stopped letting money fall through the cracks.",
+    quote: "Revenue went up 23% in three months, not because we saw more patients, but because we stopped front-desk leaks.",
     name: "Dr. Chinedu Obi",
     role: "Managing Partner",
-    clinic: "Ivory Gate Dental Group",
+    clinic: "Ivory Gate Eye Clinic",
     location: "Port Harcourt",
-    specialty: "Dental",
+    specialty: "Eye Clinic",
   },
 ];
 
-const TestimonialsSection = () => {
-  return (
-    <section className="site-band-paper relative overflow-hidden py-24 md:py-32">
-      <div className="container relative z-10">
-        <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }} className="max-w-2xl">
-          <span className="site-eyebrow block">Practice outcomes</span>
-          <h2 className="mt-4 text-3xl text-foreground md:text-4xl">
-            Measured in hours saved and cases delivered.
-          </h2>
-        </motion.div>
+const initials = (n: string) => n.replace("Dr. ", "").split(" ").map((p) => p[0]).join("");
 
-        <div className="mt-12 grid gap-5 md:grid-cols-3">
-          {testimonials.map((t, i) => (
-            <motion.figure
-              key={t.name}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.45, delay: i * 0.1 }}
-              className="relative flex flex-col overflow-hidden rounded-md border border-border/60 bg-card p-7 transition-all duration-300 hover:-translate-y-1 hover:border-primary/40"
-            >
-              <Quote aria-hidden className="absolute -right-2 -top-2 h-24 w-24 text-primary/10" />
-              <div className="text-2xl font-semibold leading-tight text-foreground">{t.outcome}</div>
-              <blockquote className="mt-4 flex-1 text-sm leading-relaxed text-muted-foreground">"{t.quote}"</blockquote>
-              <figcaption className="mt-6 border-t border-border/60 pt-4">
-                <div className="flex items-center gap-1.5 text-sm font-semibold text-foreground">
-                  {t.name} <BadgeCheck className="h-4 w-4 text-primary" aria-label="Clinician" />
-                </div>
-                <div className="text-xs text-muted-foreground">{t.role} · {t.clinic}</div>
-                <div className="mt-2 flex items-center gap-2 text-[11px] text-muted-foreground">
-                  <span className="rounded-sm border border-primary/40 px-1.5 py-0.5 font-semibold text-primary">{t.specialty}</span>
-                  <span className="flex items-center gap-1"><MapPin className="h-3 w-3" />{t.location}</span>
-                </div>
-              </figcaption>
-            </motion.figure>
-          ))}
+const TestimonialsSection = () => {
+  const { industry } = useIndustry();
+  return (
+    <ParallaxBand image={clinicImg} className="py-24 md:py-32">
+      <div className="container relative z-10">
+        <h2 className="max-w-2xl text-3xl text-foreground text-balance md:text-5xl">Measured in hours saved and money kept.</h2>
+        <div className="mt-12 grid gap-4 md:grid-cols-3">
+          {testimonials.map((t, i) => {
+            const active = t.industry === industry;
+            return (
+              <motion.figure
+                key={t.name}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.45, delay: i * 0.1 }}
+                className={`site-graphite relative flex flex-col overflow-hidden p-7 backdrop-blur-md ${active ? "ring-1 ring-primary/60" : "opacity-80"}`}
+              >
+                <Quote aria-hidden className="absolute -right-2 -top-2 h-24 w-24 text-primary/10" />
+                <div className="text-2xl font-semibold leading-tight text-foreground">{t.outcome}</div>
+                <blockquote className="mt-4 flex-1 text-base leading-relaxed text-muted-foreground">“{t.quote}”</blockquote>
+                <figcaption className="mt-6 flex items-center gap-3 border-t border-border/40 pt-4">
+                  <span className="flex h-11 w-11 flex-none items-center justify-center rounded-full bg-primary/15 text-sm font-semibold text-primary" aria-hidden>
+                    {initials(t.name)}
+                  </span>
+                  <div>
+                    <div className="text-sm font-semibold text-foreground">{t.name}</div>
+                    <div className="text-xs text-muted-foreground">{t.role} · {t.clinic}</div>
+                    <div className="mt-1 flex items-center gap-2 text-xs text-muted-foreground">
+                      <span className="font-semibold text-primary">{t.specialty}</span>
+                      <span className="flex items-center gap-1"><MapPin className="h-3 w-3" aria-hidden />{t.location}</span>
+                    </div>
+                  </div>
+                </figcaption>
+              </motion.figure>
+            );
+          })}
         </div>
+        <Link to="/articles" className="mt-10 inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-primary hover:underline">
+          Read clinic management articles <ArrowRight className="h-4 w-4" />
+        </Link>
       </div>
-    </section>
+    </ParallaxBand>
   );
 };
 
