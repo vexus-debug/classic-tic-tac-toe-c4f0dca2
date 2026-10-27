@@ -1,74 +1,37 @@
-import { useRef, useState } from "react";
-import { motion, useReducedMotion } from "framer-motion";
-import { AnimatedCounter } from "@/components/dashboard/AnimatedCounter";
+import { motion } from "framer-motion";
+import { IndustryTabs } from "./industry";
 
 const stats = [
-  {
-    value: 500,
-    render: (v: number) => `${v}+`,
-    label: "Clinics like yours, running without the chaos",
-  },
-  {
-    value: 40,
-    render: (v: number) => `${v}%`,
-    label: "Fewer patients who never show up",
-  },
-  {
-    value: 60,
-    render: (v: number) => `${v}%`,
-    label: "Less time buried in admin",
-  },
-  {
-    value: 4.8,
-    render: (v: number) => `₦${v.toFixed(1)}M`,
-    label: "Avg. monthly revenue you could be tracking",
-  },
+  { value: "500+", label: "Clinics across Nigeria" },
+  { value: "₦2.4B+", label: "Collections protected" },
+  { value: "99.9%", label: "Uptime" },
 ];
 
-const TrustStrip = () => {
-  const reduceMotion = useReducedMotion();
-  const startedRef = useRef(false);
-  const [started, setStarted] = useState(false);
-
-  return (
-    <section aria-label="Clinexus results at a glance" className="relative">
-      <div className="container">
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          onViewportEnter={() => {
-            if (!startedRef.current) {
-              startedRef.current = true;
-              setStarted(true);
-            }
-          }}
-          transition={{ duration: 0.5 }}
-          className="grid border-y border-border/30 sm:grid-cols-2 lg:grid-cols-4"
-        >
-          {stats.map((s, i) => (
-            <motion.div
-              key={s.label}
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: reduceMotion ? 0 : i * 0.08 }}
-              className={`px-6 py-8 lg:py-10 ${i > 0 ? "border-t border-border/30 sm:border-t-0" : ""} ${i % 2 === 1 ? "sm:border-l sm:border-border/30" : ""} ${i >= 2 ? "lg:border-l lg:border-border/30" : ""}`}
-            >
-              <div className="text-3xl font-extrabold tabular-nums text-foreground md:text-4xl">
-                {started ? (
-                  <AnimatedCounter value={s.value} formatter={s.render} duration={reduceMotion ? 0 : 1100} />
-                ) : (
-                  s.render(s.value)
-                )}
-              </div>
-              <p className="mt-2 max-w-[16rem] text-sm font-medium text-muted-foreground">{s.label}</p>
-            </motion.div>
-          ))}
-        </motion.div>
+const TrustStrip = () => (
+  <section aria-label="Choose your practice type" className="site-band-paper relative py-14 md:py-16">
+    <div className="container flex flex-col items-center gap-10">
+      <div className="flex flex-col items-center gap-4 text-center">
+        <p className="text-lg font-semibold text-foreground md:text-xl">What kind of practice do you run?</p>
+        <IndustryTabs />
+        <p className="text-sm text-muted-foreground">Everything below changes to match your practice.</p>
       </div>
-    </section>
-  );
-};
+      <motion.dl
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5 }}
+        className="grid w-full max-w-3xl grid-cols-3 divide-x divide-border/40 border-y border-border/40"
+      >
+        {stats.map((s) => (
+          <div key={s.label} className="px-3 py-6 text-center">
+            <dt className="sr-only">{s.label}</dt>
+            <dd className="text-2xl font-extrabold tabular-nums text-foreground md:text-4xl">{s.value}</dd>
+            <dd className="mt-1 text-xs font-medium text-muted-foreground md:text-sm">{s.label}</dd>
+          </div>
+        ))}
+      </motion.dl>
+    </div>
+  </section>
+);
 
 export default TrustStrip;
